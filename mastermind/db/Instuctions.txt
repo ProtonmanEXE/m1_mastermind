@@ -1,0 +1,17 @@
+continue looping when:
+rd counter is 10 or less AND?OR
+outcome is LOSE
+
+rd counter is 10 or less
+Continue
+
+outcome is LOSE
+Continue
+
+rd counter is 11 or more 
+STOP (false)
+OR
+outcome is WIN
+STOP (false)
+
+C:\Users\XIII\OneDrive\Documents\XIII\JavaScripts\NUSISS\GitFolder\m1_mastermind\mastermind\src\main\java\protonmanexe
