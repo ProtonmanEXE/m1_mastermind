@@ -1,3 +1,7 @@
+// Dev.: ProtonmanEXE
+// Dev. Notes: 
+// this is the server for Mastermind game
+
 package protonmanexe;
 
 import java.io.IOException;

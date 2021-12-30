@@ -1,3 +1,7 @@
+// Dev.: ProtonmanEXE
+// Dev. Notes: 
+// this contains all the classes for game commands for Mastermind game
+
 package protonmanexe;
 
 import static protonmanexe.Constants.*;
@@ -16,18 +20,19 @@ import java.util.Scanner;
 public class MMGameCommands {
 
     // variable declaration
-    private int score, indexRemove, r;
+    private int score, indexRemove, r, index;
     private String userName, readLine, readUser, readScore, readScore2, writeLine;
     private boolean Check1;
     private ArrayList<String> guess = new ArrayList<String>();
     private ArrayList<String> users = new ArrayList<String>();
     private ArrayList<String> codemaker = new ArrayList<String>();
+    private ArrayList<String> codemaker2 = new ArrayList<String>();
     private ArrayList<String> temp = new ArrayList<String>();
     private ArrayList<String> outcome = new ArrayList<String>();
     private ArrayList<Integer> toRemove = new ArrayList<Integer>();
 
     public int login(String userName) {
-        File userFile = new File("./db/db.txt");
+        File userFile = new File(DEFAULT_DIR);
         this.userName = userName;
         Check1 = false;
 
@@ -92,27 +97,24 @@ public class MMGameCommands {
         }
 
         // remove current User ID from array and add back to array with new score
-        System.out.println(users);
         for (String s : users) {
             Scanner scan = new Scanner(s);
                 readUser = scan.next();
-                if (readUser.equals(userName)) {
-                    indexRemove = users.indexOf(s);
-                }
-                scan.close();
+                if (readUser.equals(userName)) {indexRemove = users.indexOf(s);}
+            scan.close();
         }
+
         users.remove(indexRemove);
         users.add(userName +" " +score);
-        System.out.println("This is the scoresheet that will be written " +users);
 
+        // write to file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, false))) {
             for (String s: users) {
                 writer.write(s);
                 if (users.indexOf(s) == (users.size()-1)) {
                     // nothing needs to be done if s is the last element (last row) of users
-                } else {
-                    writer.newLine();
-                }
+                } else writer.newLine(); // this is coded to avoid writing an unnecessary line of empty space
+                
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,14 +132,15 @@ public class MMGameCommands {
             r = (int) (Math.random()*temp.size());
             codemaker.add(temp.get(r));
         }
-        System.out.println(codemaker);
+        // System.out.println(codemaker);
     }
 
     public ArrayList<String> solo1(String[] strArray) {
         this.guess = new ArrayList<String>(Arrays.asList(strArray));
-        outcome.clear();
-        toRemove.clear();
-        System.out.println(guess +" 1");
+        outcome.clear(); toRemove.clear(); codemaker2.clear(); // clear all arrays used in this method
+        ArrayList<String> codemaker2 = new ArrayList<>(codemaker); // duplicate the original array of codemaker
+        
+        // placing black key peg
         for (int i = 0; i < guess.size(); i++) {
             if (guess.get(i).equals(codemaker.get(i))) {
                 outcome.add("BK");
@@ -145,14 +148,22 @@ public class MMGameCommands {
             }
         }
 
-        System.out.println(toRemove +" 2");
+        // remove all elements captured under black key peg (to avoid double count)
         Collections.sort(toRemove, Collections.reverseOrder());
-        System.out.println(toRemove +" 3");
-
         for (int iterable : toRemove) {
             guess.remove(iterable);
+            codemaker2.remove(iterable);
         }
-        System.out.println(guess +" guess 4");
+
+        // placing white key peg
+        for (int i = 0; i < guess.size(); i++) {
+            index = codemaker2.indexOf(guess.get(i));
+            if (index >= 0) {
+                outcome.add("WH");
+                codemaker2.remove(index);
+            }
+        }
+
         return outcome;
     }
 

@@ -1,3 +1,7 @@
+// Dev.: ProtonmanEXE
+// Dev. Notes: 
+// this is the Client for Mastermind game
+
 package protonmanexe;
 
 import java.io.BufferedReader;
@@ -33,11 +37,15 @@ public class MMClient {
         while (!"-quit".equals(line)) {
             out.println(line);
             out.flush();
-            serverMsg = in.readLine();
-            System.out.println(serverMsg);
+            while (serverMsg != null) {
+                serverMsg = in.readLine();
+                if ("".equals(serverMsg)) break;
+                else System.out.println(serverMsg);
+            }
             line = scan.nextLine();
         }
 
+        System.out.println("Leaving Mastermind, goodbye");
         socket.close();
         scan.close();
     }
